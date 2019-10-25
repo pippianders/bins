@@ -21,10 +21,7 @@
 
 #define COFF_IMAGE_WITH_PE
 #define COFF_WITH_PE
-#define COFF_WITH_pex64
 
-/* Uses x86_64 PE+.  */
-#define pe_use_x86_64
-
+#include "epep-arch.h"
 #include "pep-dll.h"
 #include "pe-dll.c"
