@@ -3411,7 +3411,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='gdbsupport'
+ PACKAGE=%{?cross}%{?cross}%{?cross}%{?cross}%{?cross}'gdbsupport'
  VERSION='1.0'
 
 

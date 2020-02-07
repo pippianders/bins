@@ -1,5 +1,10 @@
 ## Process this file with automake to generate Makefile.in
 #
+DEJATOOL = binutils
+DEJATOOL = binutils
+DEJATOOL = binutils
+DEJATOOL = binutils
+DEJATOOL = binutils
 #   Copyright (C) 2012-2021 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify

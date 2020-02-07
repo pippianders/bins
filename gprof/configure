@@ -2863,7 +2863,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='gprof'
+ PACKAGE=%{?cross}%{?cross}%{?cross}%{?cross}%{?cross}'gprof'
  VERSION='2.36.50'
 
 

@@ -436,7 +436,7 @@ COMPILE_FOR_BUILD = $(CC_FOR_BUILD) $(INCLUDES) $(AM_CPPFLAGS) \
 LINK_FOR_BUILD = $(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) \
 	$(LDFLAGS_FOR_BUILD) -o $@
 
-libopcodes_la_LDFLAGS = $(am__append_1) -release `cat \
+libopcodes_la_LDFLAGS = -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions $(am__append_1) -release `cat \
 	../bfd/libtool-soversion` @SHARED_LDFLAGS@
 @INSTALL_LIBBFD_TRUE@bfdlib_LTLIBRARIES = libopcodes.la
 @INSTALL_LIBBFD_TRUE@bfdinclude_DATA = $(INCDIR)/dis-asm.h
@@ -700,8 +700,8 @@ libopcodes_la_SOURCES = dis-buf.c disassemble.c dis-init.c
 # old version of libbfd, or to pick up libbfd for the wrong architecture
 # if host != build. So for building with shared libraries we use a
 # hardcoded path to libbfd.so instead of relying on the entries in libbfd.la.
-libopcodes_la_DEPENDENCIES = $(OFILES) @SHARED_DEPENDENCIES@
-libopcodes_la_LIBADD = $(OFILES) @SHARED_LIBADD@
+libopcodes_la_DEPENDENCIES = $(OFILES) @SHARED_DEPENDENCIES@ ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la
+libopcodes_la_LIBADD = $(OFILES) @SHARED_LIBADD@ ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la ../bfd/libbfd.la
 # Allow dependency tracking to work on all the source files.
 EXTRA_libopcodes_la_SOURCES = $(LIBOPCODES_CFILES)
 
