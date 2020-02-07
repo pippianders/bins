@@ -2230,7 +2230,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='readline'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'readline'
  VERSION='UNUSED-VERSION'
 
 

@@ -31043,7 +31043,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='libgnu'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'libgnu'
  VERSION='UNUSED-VERSION'
 
 

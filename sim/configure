@@ -4609,7 +4609,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='sim'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'sim'
  VERSION='0'
 
 

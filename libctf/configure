@@ -4302,7 +4302,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='libctf'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'libctf'
  VERSION='1.2.0'
 
 

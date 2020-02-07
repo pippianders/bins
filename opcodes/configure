@@ -2930,7 +2930,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='opcodes'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'opcodes'
  VERSION='2.36.50'
 
 

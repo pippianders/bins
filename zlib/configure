@@ -2899,7 +2899,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='zlib'
+ PACKAGE=%{?cross}%{?cross}%{?cross}'zlib'
  VERSION='1.1.4'
 
 
