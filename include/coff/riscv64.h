@@ -59,5 +59,22 @@ struct external_reloc
 // types, but with different numbers.
 
 enum {
-  IMAGE_REL_RISCV64_ABSOLUTE = 0,	      // 64-bit VA	    R_RISCV64_NONE		A
+  IMAGE_REL_RISCV64_ABSOLUTE = 0,	// 64-bit VA			R_RISCV64_NONE			A
+  IMAGE_REL_RISCV64_ADDR32 = 1,		// 32-bit VA			R_RISCV64_ABS32			S + A
+  IMAGE_REL_RISCV64_ADDR32NB = 2,	// 32-bit RVA			R_RISCV64_PREL32		S + A - P
+  IMAGE_REL_RISCV64_BRANCH26 = 3,	// 26-bit VA B/BL		R_RISCV64_JUMP26		S + A - P
+  IMAGE_REL_RISCV64_PAGEBASE_REL21 = 4,	// 21-bit pg ADRP		R_RISCV64_ADR_PREL_PG_HI21	Page(S+A)-Page(P)
+  IMAGE_REL_RISCV64_REL21 = 5,		// 21-bit pgoff ADR						S + A
+  IMAGE_REL_RISCV64_PAGEOFFSET_12A = 6,	// 12-bit pgoff ADD(S)		R_RISCV64_ADD_ABS_LO12_NC	Delta(P) + A
+  IMAGE_REL_RISCV64_PAGEOFFSE_12L = 7,	// 12-bit pgoff LDST		R_RISCV64_LDST8_ABS_LO12_NC	Delta(P) + A
+  IMAGE_REL_RISCV64_SECREL = 8,		// 32-bit offset		R_RISCV64_RELATIVE		Delta(S) + A
+  IMAGE_REL_RISCV64_SECREL_LO12A = 9,	// 12-bit [11:0] secoff ADD(S)					Delta(S) + A
+  IMAGE_REL_RISCV64_SECREL_HI12A = 10,	// 12-bit [23:12] secoff ADD(S)					Delta(S) + A
+  IMAGE_REL_RISCV64_SECREL_LO12L = 11,	// 12-bit [11:0] secoff LDR					Delta(S) + A
+  IMAGE_REL_RISCV64_TOKEN = 12,		// 32-bit CLR token						N
+  IMAGE_REL_RISCV64_SECTION = 13,	// 16-bit section table index					N
+  IMAGE_REL_RISCV64_ADDR64 = 14,	// 64-bit VA			R_RISCV64_ABS64			S + A
+  IMAGE_REL_RISCV64_BRANCH19 = 15,	// 19-bit VA cond B						S + A
+  IMAGE_REL_RISCV64_BRANCH14 = 16,	// 14-bit VA TBZ/TBNZ						S + A
+  IMAGE_REL_RISCV64_REL32 = 17,		// 32-bit RVA of the next byte					S + A + 4
 };

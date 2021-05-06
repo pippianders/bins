@@ -107,6 +107,15 @@ coff_riscv64_reloc (bfd *abfd,
 	diff = reloc_entry->addend;
     }
 
+# if defined(COFF_WITH_PE)
+  /* FIXME: How should this case be handled?  */
+  /* WRONG WRONG WRONG WRONG */
+  if (reloc_entry->howto->type == IMAGE_REL_RISCV64_ADDR32NB
+      && output_bfd != NULL
+      && bfd_get_flavour (output_bfd) == bfd_target_coff_flavour)
+    diff -= pe_data (output_bfd)->pe_opthdr.ImageBase;
+#endif
+
 #define DOIT(x) \
   x = ((x & ~howto->dst_mask) | (((x & howto->src_mask) + diff) & howto->dst_mask))
 
@@ -176,7 +185,8 @@ coff_riscv64_reloc (bfd *abfd,
 static bfd_boolean
 in_reloc_p (bfd *abfd ATTRIBUTE_UNUSED, reloc_howto_type *howto)
 {
-  return ! howto->pc_relative;
+  return ! howto->pc_relative && howto->type != IMAGE_REL_RISCV64_ADDR32NB
+	 && howto->type != BFD_RELOC_32_SECREL;
 }
 
 #ifndef PCRELOFFSET
@@ -186,6 +196,164 @@ in_reloc_p (bfd *abfd ATTRIBUTE_UNUSED, reloc_howto_type *howto)
 static reloc_howto_type howto_table[] =
 {
   EMPTY_HOWTO (0),
+  HOWTO (IMAGE_REL_RISCV64_ADDR32,/* type 1 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 32,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_ADDR32",		/* name */
+	 TRUE,			/* partial_inplace */
+	 0xffffffff,		/* src_mask */
+	 0xffffffff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_ADDR32NB,/* type 2 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 32,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_ADDR32NB",	/* name */
+	 TRUE,			/* partial_inplace */
+	 0xffffffff,		/* src_mask */
+	 0xffffffff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_BRANCH26,/* type 3 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 26,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_signed, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_BRANCH26",	/* name */
+	 TRUE,			/* partial_inplace */
+	 0x03ffffff,		/* src_mask */
+	 0x03ffffff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_PAGEBASE_REL21,/* type 4 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 21,			/* bitsize */
+	 TRUE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_signed, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_PAGEBASE_REL21",	/* name */
+	 TRUE,			/* partial_inplace */
+	 0xfffff800,		/* src_mask */
+	 0xfffff800,		/* dst_mask */
+	 PCRELOFFSET),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_REL21, /* type 5 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 21,			/* bitsize */
+	 TRUE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_signed, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_REL21",/* name */
+	 FALSE,			/* partial_inplace */
+	 0x001fffff,		/* src_mask */
+	 0x001fffff,		/* dst_mask */
+	 PCRELOFFSET),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_PAGEOFFSET_12A,/* type 6 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 12,			/* bitsize */
+	 TRUE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_signed, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_PAGEOFFSET_12A",/* name */
+	 FALSE,			/* partial_inplace */
+	 0x00000fff,		/* src_mask */
+	 0x00000fff,		/* dst_mask */
+	 PCRELOFFSET),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_PAGEOFFSE_12L,/* type 7 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 12,			/* bitsize */
+	 TRUE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_signed, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_PAGEOFFSE_12L",/* name */
+	 FALSE,			/* partial_inplace */
+	 0x00000fff,		/* src_mask */
+	 0x00000fff,		/* dst_mask */
+	 PCRELOFFSET),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_SECREL,/* type 8 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 32,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_SECREL",	/* name */
+	 TRUE,			/* partial_inplace */
+	 0xffffffff,		/* src_mask */
+	 0xffffffff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_SECREL_LO12A,/* type 9 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 12,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_SECREL_LO12A",/* name */
+	 TRUE,			/* partial_inplace */
+	 0x00000fff,		/* src_mask */
+	 0x00000fff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_SECREL_HI12A,/* type 10 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 12,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_SECREL_HI12A",/* name */
+	 TRUE,			/* partial_inplace */
+	 0x00fff000,		/* src_mask */
+	 0x00fff000,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  HOWTO (IMAGE_REL_RISCV64_SECREL_LO12L,/* type 11 */
+	 0,			/* rightshift */
+	 2,			/* size (0 = byte, 1 = short, 2 = long) */
+	 12,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_SECREL_LO12L",/* name */
+	 TRUE,			/* partial_inplace */
+	 0x00000fff,		/* src_mask */
+	 0x00000fff,		/* dst_mask */
+	 FALSE),		/* pcrel_offset */
+  EMPTY_HOWTO (IMAGE_REL_RISCV64_TOKEN),/* type 12 */
+  EMPTY_HOWTO (IMAGE_REL_RISCV64_SECTION),/* type 13 */
+  HOWTO (IMAGE_REL_RISCV64_ADDR64,/* type 14 */
+	 0,			/* rightshift */
+	 4,			/* size (0 = byte, 1 = short, 2 = long, 4 = long long) */
+	 64,			/* bitsize */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_bitfield, /* complain_on_overflow */
+	 coff_riscv64_reloc,	/* special_function */
+	 "IMAGE_REL_RISCV64_ADDR64",	/* name */
+	 TRUE,			/* partial_inplace */
+	 0xffffffffffffffffll,	/* src_mask */
+	 0xffffffffffffffffll,	/* dst_mask */
+	 PCRELOFFSET),		/* pcrel_offset */
 };
 
 #define NUM_HOWTOS ARRAY_SIZE (howto_table)
@@ -314,6 +482,33 @@ coff_riscv64_rtype_to_howto (bfd *abfd ATTRIBUTE_UNUSED,
 	*addendp -= sym->n_value;
     }
 
+  if (rel->r_type == IMAGE_REL_RISCV64_ADDR32NB
+      && (bfd_get_flavour (sec->output_section->owner) == bfd_target_coff_flavour))
+    *addendp -= pe_data (sec->output_section->owner)->pe_opthdr.ImageBase;
+
+  if (rel->r_type == BFD_RELOC_32_SECREL)
+    {
+      bfd_vma osect_vma;
+
+      if (h && (h->root.type == bfd_link_hash_defined
+		|| h->root.type == bfd_link_hash_defweak))
+	osect_vma = h->root.u.def.section->output_section->vma;
+      else
+	{
+	  asection *s;
+	  int i;
+
+	  /* Sigh, the only way to get the section to offset against
+	     is to find it the hard way.  */
+	  for (s = abfd->sections, i = 1; i < sym->n_scnum; i++)
+	    s = s->next;
+
+	  osect_vma = s->output_section->vma;
+	}
+
+      *addendp -= osect_vma;
+    }
+
   return howto;
 }
 
@@ -326,7 +521,24 @@ coff_riscv64_reloc_type_lookup (bfd *abfd ATTRIBUTE_UNUSED, bfd_reloc_code_real_
 #define ASTD(i,j)       case i: return howto_table + j
   switch (code)
     {
+      /* WRONG WRONG WRONG */
       ASTD (BFD_RELOC_RISCV64_NONE,		IMAGE_REL_RISCV64_ABSOLUTE);
+      ASTD (BFD_RELOC_32,			IMAGE_REL_RISCV64_ADDR32);
+      ASTD (BFD_RELOC_RVA,			IMAGE_REL_RISCV64_ADDR32NB);
+      ASTD (BFD_RELOC_RISCV64_JUMP26,		IMAGE_REL_RISCV64_BRANCH26);
+      ASTD (BFD_RELOC_RISCV64_ADR_HI21_PCREL,	IMAGE_REL_RISCV64_PAGEBASE_REL21);
+      ASTD (BFD_RELOC_RISCV64_ADR_LO21_PCREL,	IMAGE_REL_RISCV64_REL21);
+      ASTD (BFD_RELOC_RISCV64_ADD_LO12,		IMAGE_REL_RISCV64_PAGEOFFSET_12A);
+      ASTD (BFD_RELOC_RISCV64_LDST8_LO12,	IMAGE_REL_RISCV64_PAGEOFFSE_12L);
+      ASTD (BFD_RELOC_32_SECREL,		IMAGE_REL_RISCV64_SECREL);
+      ASTD (BFD_RELOC_RISCV64_ADD_LO12_SECREL,	IMAGE_REL_RISCV64_SECREL_LO12A);
+      ASTD (BFD_RELOC_RISCV64_ADD_HI12_SECREL,	IMAGE_REL_RISCV64_SECREL_HI12A);
+      ASTD (BFD_RELOC_RISCV64_LDST8_LO12_SECREL,IMAGE_REL_RISCV64_SECREL_LO12L);
+      ASTD (BFD_RELOC_SECTION,			IMAGE_REL_RISCV64_SECTION);
+      ASTD (BFD_RELOC_64,			IMAGE_REL_RISCV64_ADDR64);
+      ASTD (BFD_RELOC_RISCV64_BRANCH19,		IMAGE_REL_RISCV64_BRANCH19);
+      ASTD (BFD_RELOC_RISCV64_TSTBR14,		IMAGE_REL_RISCV64_BRANCH14);
+      ASTD (BFD_RELOC_32_PCREL,			IMAGE_REL_RISCV64_REL32);
     default:
       BFD_FAIL ();
       return 0;
