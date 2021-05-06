@@ -44,6 +44,13 @@
 #include "coff/rs6000.h"
 #endif
 
+#ifdef TC_RISCV64
+#include "coff/riscv64.h"
+#ifndef TARGET_FORMAT
+#define TARGET_FORMAT "coff-riscv64"
+#endif
+#endif
+
 #ifdef TC_I386
 #ifdef TE_PEP
 #include "coff/x86_64.h"

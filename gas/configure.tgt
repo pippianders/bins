@@ -91,6 +91,7 @@ case ${cpu} in
   powerpc*)		cpu_type=ppc endian=big ;;
   riscv64be*)		cpu_type=riscv endian=big arch=riscv64 ;;
   riscv64*)		cpu_type=riscv endian=little arch=riscv64 ;;
+  riscv64*-pe)		cpu_type=riscv endian=little arch=riscv64 em=pep ;;
   riscv32be*|riscvbe*)	cpu_type=riscv endian=big arch=riscv32 ;;
   riscv32* | riscv*)	cpu_type=riscv endian=little arch=riscv32 ;;
   rs6000*)		cpu_type=ppc ;;
