@@ -767,6 +767,9 @@ riscv64be*-*-*)		targ_emul=elf64briscv
 			targ_extra_emuls="elf32briscv elf64lriscv elf32lriscv"
 			targ_extra_libpath=$targ_extra_emuls
 			;;
+riscv64*-*-pe)		targ_emul=riscv64pep
+			targ_extra_ofiles="deffilep.o pep-dll.o pe-dll.o"
+			;;
 riscv64*-*-*)		targ_emul=elf64lriscv
 			targ_extra_emuls="elf32lriscv elf64briscv elf32briscv"
 			targ_extra_libpath=$targ_extra_emuls

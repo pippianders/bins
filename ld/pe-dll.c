@@ -42,7 +42,7 @@
 #include "../bfd/libcoff.h"
 #include "deffile.h"
 
-#ifdef pe_use_x86_64
+#ifdef defined(pe_use_x86_64) || defined(pe_use_riscv64)
 
 #define PE_IDATA4_SIZE	8
 #define PE_IDATA5_SIZE	8
@@ -246,6 +246,7 @@ static const autofilter_entry_type autofilter_symbollist_i386[] =
 #define PE_ARCH_mips	 3
 #define PE_ARCH_arm	 4
 #define PE_ARCH_arm_wince 5
+#define PE_ARCH_riscv64  7
 
 /* Don't make it constant as underscore mode gets possibly overriden
    by target or -(no-)leading-underscore option.  */
@@ -327,6 +328,17 @@ static pe_details_type pe_detail_list[] =
     false,
     autofilter_symbollist_generic
   },
+#ifdef pe_use_riscv64
+  {
+    "pei-riscv64",
+    "pe-riscv64",
+    2, /* XXX this is not defined in the current spec and I have copied from aarch64. --pjones */
+    PE_ARCH_riscv64,
+    bfd_arch_riscv64,
+    false,
+    autofilter_symbollist_generic
+  },
+#endif
   { NULL, NULL, 0, 0, 0, false, NULL }
 };
 
@@ -1641,7 +1653,7 @@ generate_reloc (bfd *abfd, struct bfd_link_info *info)
 		  switch BITS_AND_SHIFT (relocs[i]->howto->bitsize,
 					 relocs[i]->howto->rightshift)
 		    {
-#ifdef pe_use_x86_64
+#if defined(pe_use_x86_64) || defined(pe_use_riscv64)
 		    case BITS_AND_SHIFT (64, 0):
 		      reloc_data[total_relocs].type = 10;
 		      total_relocs++;
@@ -2278,6 +2290,15 @@ static const unsigned char jmp_arm_bytes[] =
   0,    0,    0,    0
 };
 
+/*
+ * XXX This is certainly wrong; it is copy-pasta from mips
+ * --pjones
+ */
+static const unsigned char jmp_riscv64_bytes[] =
+{
+  0x00, 0x00, 0x08, 0x3c,  0x00, 0x00, 0x08, 0x8d,
+  0x08, 0x00, 0x00, 0x01,  0x00, 0x00, 0x00, 0x00
+};
 
 static bfd *
 make_one (def_file_export *exp, bfd *parent, bool include_jmp_stub)
@@ -2303,6 +2324,10 @@ make_one (def_file_export *exp, bfd *parent, bool include_jmp_stub)
 	case PE_ARCH_i386:
 	  jmp_bytes = jmp_ix86_bytes;
 	  jmp_byte_count = sizeof (jmp_ix86_bytes);
+	  break;
+	case PE_ARCH_riscv64:
+	  jmp_bytes = jmp_riscv64_bytes;
+	  jmp_byte_count = sizeof (jmp_riscv64_bytes);
 	  break;
 	case PE_ARCH_sh:
 	  jmp_bytes = jmp_sh_bytes;
@@ -2398,6 +2423,14 @@ make_one (def_file_export *exp, bfd *parent, bool include_jmp_stub)
 	  quick_reloc (abfd, 0, BFD_RELOC_HI16_S, 2);
 	  quick_reloc (abfd, 0, BFD_RELOC_LO16, 0); /* MIPS_R_PAIR */
 	  quick_reloc (abfd, 4, BFD_RELOC_LO16, 2);
+	  break;
+	case PE_ARCH_riscv64:
+	  /*
+	   * XXX this is not currently defined in the spec, and I have copied
+	   * from aarch64, which is probably also wrong.
+	   * --pjones
+	   */
+	  quick_reloc (abfd, 2, BFD_RELOC_32_PCREL, 2);
 	  break;
 	case PE_ARCH_arm:
 	case PE_ARCH_arm_wince:
@@ -3374,7 +3407,7 @@ pe_implied_import_dll (const char *filename)
   /* Get pe_header, optional header and numbers of directory entries.  */
   pe_header_offset = pe_get32 (dll, 0x3c);
   opthdr_ofs = pe_header_offset + 4 + 20;
-#ifdef pe_use_x86_64
+#if defined(pe_use_x86_64) || defined(pe_use_riscv64)
   num_entries = pe_get32 (dll, opthdr_ofs + 92 + 4 * 4); /*  & NumberOfRvaAndSizes.  */
 #else
   num_entries = pe_get32 (dll, opthdr_ofs + 92);
@@ -3384,7 +3417,7 @@ pe_implied_import_dll (const char *filename)
   if (num_entries < 1)
     return false;
 
-#ifdef pe_use_x86_64
+#if defined(pe_use_x86_64) || defined(pe_use_riscv64)
   export_rva  = pe_get32 (dll, opthdr_ofs + 96 + 4 * 4);
   export_size = pe_get32 (dll, opthdr_ofs + 100 + 4 * 4);
 #else

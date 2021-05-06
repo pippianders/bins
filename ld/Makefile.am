@@ -416,6 +416,7 @@ ALL_64_EMULATION_SOURCES = \
 	eelf32briscv.c \
 	eelf32briscv_ilp32f.c \
 	eelf32briscv_ilp32.c \
+	eriscv64pep.c \
 	eelf64_aix.c \
 	eelf64bpf.c \
 	eelf64_ia64.c \
@@ -482,7 +483,10 @@ HFILES = ld.h ldctor.h ldemul.h ldexp.h ldfile.h \
 	elf-hints-local.h plugin.h ldbuildid.h ldelf.h ldelfgen.h
 
 GENERATED_CFILES = ldgram.c ldlex.c deffilep.c
-GENERATED_HFILES = ldgram.h ldemul-list.h deffilep.h
+GENERATED_HFILES = ldgram.h ldemul-list.h deffilep.h epep-arch.h
+
+$(ALL_64_EMULATIONS) $(ALL_EMUL_EXTRA_OFILES) $(ALL_64_EMUL_EXTRA_OFILES) $(CFILES) $(HFILES) : | run-genscripts
+epep-arch.h : run-genscripts
 
 # Require an early dependency on the generated headers, as the dependency
 # tracking will not cause them to be built beforehand.
@@ -944,6 +948,7 @@ $(ALL_EMULATION_SOURCES) $(ALL_64_EMULATION_SOURCES): $(GEN_DEPENDS)
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_x86_64_sol2.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ehppa64linux.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ei386pep.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eriscv64pep.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/emmo.Pc@am__quote@
 
 # We need this for automake to use YLWRAP.
