@@ -22,43 +22,41 @@
 #ifndef PEP_DLL_H
 #define PEP_DLL_H
 
-#include "sysdep.h"
-#include "bfd.h"
-#include "bfdlink.h"
-#include "deffile.h"
+/* Local defined globals.  */
+#define pe_def_file	            pep_def_file
+#define pe_details	            pep_details
+#define pe_dll_compat_implib        pep_dll_compat_implib
+#define pe_dll_extra_pe_debug       pep_dll_extra_pe_debug
+#define pe_dll_export_everything    pep_dll_export_everything
+#define pe_dll_exclude_all_symbols  pep_dll_exclude_all_symbols
+#define pe_dll_do_default_excludes  pep_dll_do_default_excludes
+#define pe_dll_kill_ats             pep_dll_kill_ats
+#define pe_dll_stdcall_aliases      pep_dll_stdcall_aliases
+#define pe_dll_warn_dup_exports     pep_dll_warn_dup_exports
+#define pe_use_nul_prefixed_import_tables \
+				    pep_use_nul_prefixed_import_tables
+#define pe_use_coff_long_section_names \
+				    pep_use_coff_long_section_names
+#define pe_leading_underscore	    pep_leading_underscore
+#define pe_dll_enable_reloc_section pep_dll_enable_reloc_section
 
-extern def_file * pep_def_file;
-extern int pep_dll_export_everything;
-extern int pep_dll_exclude_all_symbols;
-extern int pep_dll_do_default_excludes;
-extern int pep_dll_kill_ats;
-extern int pep_dll_stdcall_aliases;
-extern int pep_dll_warn_dup_exports;
-extern int pep_dll_compat_implib;
-extern int pep_dll_extra_pe_debug;
-extern int pep_use_nul_prefixed_import_tables;
-extern int pep_use_coff_long_section_names;
-extern int pep_leading_underscore;
-extern int pep_dll_enable_reloc_section;
+/* Unique global name for functions to avoid double defined symbols.  */
+#define pe_find_data_imports        pep_find_data_imports
+#define pe_create_import_fixup      pep_create_import_fixup
+#define pe_dll_generate_def_file    pep_dll_generate_def_file
+#define pe_process_import_defs      pep_process_import_defs
+#define pe_dll_id_target            pep_dll_id_target
+#define pe_implied_import_dll       pep_implied_import_dll
+#define pe_dll_build_sections       pep_dll_build_sections
+#define pe_exe_build_sections       pep_exe_build_sections
+#define pe_dll_fill_sections        pep_dll_fill_sections
+#define pe_exe_fill_sections        pep_exe_fill_sections
+#define pe_dll_generate_implib      pep_dll_generate_implib
+#define pe_dll_add_excludes         pep_dll_add_excludes
+#define pe_bfd_is_dll		    pep_bfd_is_dll
+#define pe_output_file_set_long_section_names \
+				    pep_output_file_set_long_section_names
 
-typedef enum { EXCLUDESYMS, EXCLUDELIBS, EXCLUDEFORIMPLIB } exclude_type;
-
-extern void pep_dll_id_target  (const char *);
-extern void pep_dll_add_excludes  (const char *, const exclude_type);
-extern void pep_dll_generate_def_file  (const char *);
-extern void pep_dll_generate_implib  (def_file *, const char *, struct bfd_link_info *);
-extern void pep_process_import_defs  (bfd *, struct bfd_link_info *);
-extern bool pep_implied_import_dll  (const char *);
-extern void pep_dll_build_sections  (bfd *, struct bfd_link_info *);
-extern void pep_exe_build_sections  (bfd *, struct bfd_link_info *);
-extern void pep_dll_fill_sections  (bfd *, struct bfd_link_info *);
-extern void pep_exe_fill_sections  (bfd *, struct bfd_link_info *);
-extern void pep_find_data_imports  (const char *,
-				    void (*cb) (arelent *, asection *, char *,
-						const char *));
-extern void pep_create_import_fixup  (arelent * rel, asection *, bfd_vma,
-				      char *, const char *);
-extern bool pep_bfd_is_dll  (bfd *);
-extern void pep_output_file_set_long_section_names (bfd *);
+#include "pe-dll.h"
 
 #endif /* PEP_DLL_H */

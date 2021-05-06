@@ -46,16 +46,13 @@
 
 #define PE_IDATA4_SIZE	8
 #define PE_IDATA5_SIZE	8
-#include "pep-dll.h"
 #undef  AOUTSZ
 #define AOUTSZ		PEPAOUTSZ
 #define PEAOUTHDR	PEPAOUTHDR
 
-#else
+#endif
 
 #include "pe-dll.h"
-
-#endif
 
 #ifndef PE_IDATA4_SIZE
 #define PE_IDATA4_SIZE	4

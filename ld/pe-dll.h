@@ -42,33 +42,22 @@ extern int pe_dll_enable_reloc_section;
 
 typedef enum { EXCLUDESYMS, EXCLUDELIBS, EXCLUDEFORIMPLIB } exclude_type;
 
-extern void pe_dll_id_target
-  (const char *);
-extern void pe_dll_add_excludes
-  (const char *, const exclude_type);
-extern void pe_dll_generate_def_file
-  (const char *);
-extern void pe_dll_generate_implib
-  (def_file *, const char *, struct bfd_link_info *);
-extern void pe_process_import_defs
-  (bfd *, struct bfd_link_info *);
-extern bool pe_implied_import_dll
-  (const char *);
-extern void pe_dll_build_sections
-  (bfd *, struct bfd_link_info *);
-extern void pe_exe_build_sections
-  (bfd *, struct bfd_link_info *);
-extern void pe_dll_fill_sections
-  (bfd *, struct bfd_link_info *);
-extern void pe_exe_fill_sections
-  (bfd *, struct bfd_link_info *);
-extern void pe_find_data_imports
-  (const char *, void (*cb) (arelent *, asection *, char *, const char *));
-extern void pe_create_import_fixup
-  (arelent * rel, asection *, bfd_vma, char *, const char *);
-extern bool pe_bfd_is_dll
-  (bfd *);
-extern void pe_output_file_set_long_section_names
-  (bfd *);
+extern void pe_dll_id_target  (const char *);
+extern void pe_dll_add_excludes  (const char *, const exclude_type);
+extern void pe_dll_generate_def_file  (const char *);
+extern void pe_dll_generate_implib  (def_file *, const char *, struct bfd_link_info *);
+extern void pe_process_import_defs  (bfd *, struct bfd_link_info *);
+extern bool pe_implied_import_dll  (const char *);
+extern void pe_dll_build_sections  (bfd *, struct bfd_link_info *);
+extern void pe_exe_build_sections  (bfd *, struct bfd_link_info *);
+extern void pe_dll_fill_sections  (bfd *, struct bfd_link_info *);
+extern void pe_exe_fill_sections  (bfd *, struct bfd_link_info *);
+extern void pe_find_data_imports  (const char *,
+				    void (*cb) (arelent *, asection *, char *,
+						const char *));
+extern void pe_create_import_fixup  (arelent * rel, asection *, bfd_vma,
+				      char *, const char *);
+extern bool pe_bfd_is_dll  (bfd *);
+extern void pe_output_file_set_long_section_names (bfd *);
 
 #endif /* PE_DLL_H */
